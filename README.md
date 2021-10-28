@@ -48,7 +48,7 @@ This bot is intended for single-guild usage.
 
 ### Credits
 
-This project is based a project i Contribute, [Accord](https://github.com/patrickklaeren/Accord) originally created by [Patrick Klaeren](https://github.com/patrickklaeren/)
+This project is based on a project i contribute, [Accord](https://github.com/patrickklaeren/Accord) originally created by [Patrick Klaeren](https://github.com/patrickklaeren/)
 
 Notable dependencies for this project include:
 - [Remora](https://github.com/Nihlus/Remora.Discord)
