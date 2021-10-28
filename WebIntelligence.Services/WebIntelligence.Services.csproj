@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="10.1.1" />
+        <PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="7.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+        <PackageReference Include="LazyCache" Version="2.1.3" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+        <PackageReference Include="Remora.Results" Version="7.0.2" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(ImplicitUsings)' == 'true' Or '$(ImplicitUsings)' == 'enable'">
+        <Using Include="System.Threading.Tasks" />
+        <Using Include="System.Threading" />
+        <Using Include="System" />
+        <Using Include="System.Linq" />
+        <Using Include="Remora.Results" />
+        <Using Include="LazyCache" />
+        <Using Include="MediatR" />
+        <Using Include="WebIntelligence.Domain" />
+        <Using Include="WebIntelligence.Domain.Model" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\WebIntelligence.Common\WebIntelligence.Common.csproj" />
+      <ProjectReference Include="..\WebIntelligence.Domain\WebIntelligence.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
