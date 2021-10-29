@@ -16,4 +16,6 @@ public class User
 
     public DateTimeOffset FirstSeenDateTime { get; set; }
     public DateTimeOffset LastSeenDateTime { get; set; }
+    
+    public ICollection<UserVote> Votes { get; set; }
 }

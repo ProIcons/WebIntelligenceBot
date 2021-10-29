@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Remora.Commands.Extensions;
 using Remora.Discord.API.Abstractions.Gateway.Commands;
 using Remora.Discord.Commands.Extensions;
@@ -29,7 +30,8 @@ public static class WebIntelligenceBotServiceCollectionsExtensions
             .Configure<DiscordConfiguration>(discordConfigurationSection);
         services
             .AddLogging()
-            .AddTransient<BotClient>()
+            // .AddTransient<BotClient>()
+            .AddSingleton(serviceProvider => serviceProvider.GetRequiredService<IOptions<DiscordConfiguration>>().Value)
             .AddSingleton<BotState>()
             .AddSingleton<DiscordCache>()
             .AddScoped<DiscordAvatarHelper>()
@@ -50,7 +52,8 @@ public static class WebIntelligenceBotServiceCollectionsExtensions
             .AddDiscordCommands(true)
             .AddExecutionEvent<CommandExecutionEventRespondHandler>()
             .AddParser<TimeSpanParser>()
-            .AddCommandGroup<ReminderCommandGroup>();
+            .AddCommandGroup<ReminderCommandGroup>()
+            .AddCommandGroup<PollCommand>();
 
 
         var responderTypes = typeof(BotClient).Assembly
@@ -61,7 +64,7 @@ public static class WebIntelligenceBotServiceCollectionsExtensions
         {
             services.AddResponder(responderType);
         }
-        
+
         services
             .AddHostedService<BotHostedService>();
 

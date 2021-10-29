@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebIntelligence.Domain;
@@ -11,9 +12,10 @@ using WebIntelligence.Domain;
 namespace WebIntelligence.Domain.Migrations
 {
     [DbContext(typeof(WebIntelligenceContext))]
-    partial class WebIntelligenceContextModelSnapshot : ModelSnapshot
+    [Migration("20211028174238_PollFeature")]
+    partial class PollFeature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +33,9 @@ namespace WebIntelligence.Domain.Migrations
                         .HasColumnName("Id")
                         .HasDefaultValueSql("uuid_generate_v4()");
 
+                    b.Property<string>("CachedFinishingMessage")
+                        .HasColumnType("text");
+
                     b.Property<decimal>("ChannelId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("ChannelId");
@@ -38,12 +43,6 @@ namespace WebIntelligence.Domain.Migrations
                     b.Property<DateTimeOffset>("EndingTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("EndingTime");
-
-                    b.Property<bool>("Finalized")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bool")
-                        .HasDefaultValue(false)
-                        .HasColumnName("Finalized");
 
                     b.Property<decimal>("MessageHandle")
                         .HasColumnType("numeric(20,0)")
@@ -57,6 +56,9 @@ namespace WebIntelligence.Domain.Migrations
                     b.Property<DateTimeOffset>("StartedTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("StartedTime");
+
+                    b.Property<int>("TotalVotes")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -156,7 +158,7 @@ namespace WebIntelligence.Domain.Migrations
                     b.Property<Guid>("PollOptionId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("PollId")
+                    b.Property<Guid?>("PollId")
                         .HasColumnType("uuid");
 
                     b.HasKey("UserId", "PollOptionId");
@@ -192,11 +194,9 @@ namespace WebIntelligence.Domain.Migrations
 
             modelBuilder.Entity("WebIntelligence.Domain.Model.UserVote", b =>
                 {
-                    b.HasOne("WebIntelligence.Domain.Model.Poll", "Poll")
-                        .WithMany("UserVotes")
-                        .HasForeignKey("PollId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("WebIntelligence.Domain.Model.Poll", null)
+                        .WithMany("Voters")
+                        .HasForeignKey("PollId");
 
                     b.HasOne("WebIntelligence.Domain.Model.PollOption", "PollOption")
                         .WithMany("UserVotes")
@@ -210,8 +210,6 @@ namespace WebIntelligence.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Poll");
-
                     b.Navigation("PollOption");
 
                     b.Navigation("User");
@@ -221,7 +219,7 @@ namespace WebIntelligence.Domain.Migrations
                 {
                     b.Navigation("Options");
 
-                    b.Navigation("UserVotes");
+                    b.Navigation("Voters");
                 });
 
             modelBuilder.Entity("WebIntelligence.Domain.Model.PollOption", b =>

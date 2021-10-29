@@ -11,10 +11,13 @@ public class WebIntelligenceContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresExtension("uuid-ossp");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(WebIntelligenceContext).Assembly);
-        base.OnModelCreating(modelBuilder);
     }
-    
+
     public virtual DbSet<User> Users { get; set; } = null!;
     public virtual DbSet<UserReminder> UserReminders { get; set; } = null!;
+    public virtual DbSet<Poll> Polls { get; set; } = null!;
+    public virtual DbSet<PollOption> PollOptions { get; set; } = null!;
+    public virtual DbSet<UserVote> UserVotes { get; set; } = null!;
 }

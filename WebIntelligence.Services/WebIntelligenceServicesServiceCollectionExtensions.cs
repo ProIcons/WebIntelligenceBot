@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebIntelligence.Common.Helpers;
 using WebIntelligence.Services.HostedServices;
@@ -12,8 +13,11 @@ public static class WebIntelligenceServicesServiceCollectionExtensions
     {
         return services
                 .AddSingleton<MappingProfile>()
+                .AddSingleton<IEventQueue, EventQueue>()
                 .AddAutoMapper((builder) => builder.AddProfile(new MappingProfile()), typeof(Results).Assembly, typeof(WebIntelligenceContext).Assembly)
                 .AddHostedService<RemindersHostedService>()
+                .AddHostedService<PollHostedService>()
+                .AddHostedService<EventQueueProcessorHostedService>()
             ;
     }
 }

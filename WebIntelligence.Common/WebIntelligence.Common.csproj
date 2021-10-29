@@ -19,9 +19,5 @@
         <Using Include="WebIntelligence.Common.Requests" />
         <Using Include="WebIntelligence.Common.Models" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Extensions" />
-    </ItemGroup>
 
 </Project>

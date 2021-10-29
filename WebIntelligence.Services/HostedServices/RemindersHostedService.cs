@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using WebIntelligence.Common.Requests;
 
 namespace WebIntelligence.Services.HostedServices;
@@ -7,24 +8,33 @@ namespace WebIntelligence.Services.HostedServices;
 public class RemindersHostedService : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<RemindersHostedService> _logger;
 
-    public RemindersHostedService(IServiceScopeFactory serviceScopeFactory)
+    public RemindersHostedService(IServiceScopeFactory serviceScopeFactory, ILogger<RemindersHostedService> logger)
     {
         _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-        var services = scope.ServiceProvider;
-
-        var mediator = services.GetRequiredService<IMediator>();
-
-        await ProcessReminders(mediator, true, stoppingToken);
-
+        await ProcessReminders(true, stoppingToken);
         while (!stoppingToken.IsCancellationRequested)
         {
-            await ProcessReminders(mediator, false, stoppingToken);
+            await ProcessReminders(false, stoppingToken);
+        }
+
+        _logger.LogInformation($"{nameof(RemindersHostedService)} is terminating...");
+    }
+
+    private async Task ProcessReminders(bool discard, CancellationToken ctx)
+    {
+        using (var scope = _serviceScopeFactory.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+
+            var mediator = services.GetRequiredService<IMediator>();
+            await ProcessReminders(mediator, discard, ctx);
         }
     }
 
@@ -45,5 +55,12 @@ public class RemindersHostedService : BackgroundService
         }
 
         await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
+    }
+
+    public override async Task StopAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation($"{nameof(RemindersHostedService)} is stopping.");
+        await base.StopAsync(stoppingToken);
+        _logger.LogInformation($"{nameof(RemindersHostedService)} is stopped.");
     }
 }

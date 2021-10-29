@@ -9,5 +9,8 @@ public class MappingProfile : Profile
     {
         CreateMap<User, UserDto>();
         CreateMap<UserReminder, ReminderDto>();
+        CreateMap<Poll, PollDto>();
+        CreateMap<PollOption, PollOptionDto>();
+        CreateMap<UserVote, UserVoteDto>();
     }
 }
